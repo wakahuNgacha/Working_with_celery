@@ -1,0 +1,32 @@
+version: '3.0'
+
+
+services:
+
+  redis:
+    image: redis:7.0.11-alpine
+
+  django:
+    container_name: django
+    build:
+      context: ./working_with_celery
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./working_with_celery:/usr/src/app/
+    ports:
+      - "8001:8000"
+    # environment:
+    #   -DEBUG=1
+    #   -SECRET_KEY=9jdfhsyfwuyefwer7323y938
+    #   -ALLOWED_HOST=localhost,127.0.0.1
+    depends_on:
+      - redis
+  celery:
+    container_name: celery
+    build:
+      context: ./working_with_celery
+    command: celery --app=working_with_celery worker -l INFO  
+    volumes:
+      - ./working_with_celery:/usr/src/app/
+    depends_on:
+      - redis
