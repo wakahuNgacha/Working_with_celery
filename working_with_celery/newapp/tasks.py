@@ -1,5 +1,5 @@
 from celery import shared_task
 
 @shared_task
-def shared_task():
-    return
+def shared_task(r,x):
+    return(r * x)
